@@ -1,12 +1,12 @@
 fn main() {
-    let sum:i32 = {
-        let mut i  = 0;
-        for j in 0..101 {
-            i += j
-        }
-         i
-    };
 
-    println!("1..100 sum eq : {}", sum);
+    println!("fb :{}", fb(10));
+}
 
+fn fb(n: i32) -> i32 {
+    if n == 1 || n == 2 {
+        1
+    } else {
+        fb(n - 1) + fb(n - 2)
+    }
 }
