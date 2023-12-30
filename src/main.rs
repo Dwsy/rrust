@@ -1,28 +1,25 @@
-#[derive(Debug)]
-#[allow(dead_code)]
-enum PokerSuit {
-    Clubs,
-    Spades,
-    Diamonds,
-    Hearts,
+enum Number {
+    Zero,
+    One,
+    Two,
 }
+
+enum Number1 {
+    Zero = 0,
+    One,
+    Two,
+}
+
+// C-like enum
+enum Number2 {
+    Zero = 0,
+    One = 1,
+    Two = 2,
+}
+
 
 fn main() {
-    let heart = PokerSuit::Hearts;
-    let diamond = PokerSuit::Diamonds;
-
-    print_suit(&heart);
-    print_suit(&diamond);
-
-    println!("{:?}", heart);
-    println!("{:?}", diamond);
-    println!("index {:?}",heart as i32);
-    println!("index {:?}",diamond as i32);
-
-}
-
-fn print_suit(card: &PokerSuit) {
-    // 需要在定义 enum PokerSuit 的上面添加上 #[derive(Debug)]，否则会报 card 没有实现 Debug
-    println!("{:?}",*card);
-    // println!("index {:?}",card as i32);
-}
+    // a enum variant can be converted to a integer by `as`
+    assert_eq!(Number::One as u8, Number1::One as u8);
+    assert_eq!(Number1::One as u8, Number2::One as u8);
+} 
