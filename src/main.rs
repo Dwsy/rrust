@@ -1,18 +1,24 @@
 fn main() {
-    let s1 = String::from("Rie");
-    let s2 = "Rie";
+    let mut user1 = User {
+        email: String::from("someone@example.com"),
+        username: String::from("someusername123"),
+        active: true,
+        sign_in_count: 1,
+    };
 
-    println!("{}",s1);
-    println!("{}",s2);
+    user1.email = String::from("anotheremail@example.com");
 
-    println!("{:p}",s1.as_ptr());
-    println!("{:p}",s2.as_ptr());
+    let user2 = User {
+        email: String::from("another@example.com"),
+        ..user1
+    };
+    println!("{:?}", &user2);
 }
-// Rie
-// Rie
-// 0x600000c30030
-// 0x102602d6c
-// 打印出的这两个地址是分别属于 s1 和 s2 的内存地址。虽然这两个字符串的内容是一样的，但是它们在内存中的位置是不同的。这就是为什么它们的内存地址会有所不同。
-// String::from("Rie"); 会在堆内存中创建一个新的字符串对象，而 "Rie" 是一个字符串字面量，它在编译时期就被嵌入到程序的二进制文件中，通常放在特别的只读内存区域，也就是 .rodata 段。
-// 另外，值得注意的是在很多情况下，堆内存的地址相对较大，而只读内存区的地址相对较小，这也解释了为什么 s1 的地址相比于 s2 的地址要大。但具体地址数值的大小也取决于操作系统的内存管理机制和地址分配策略。
-// 在实际编程中，我们通常并不会直接关注这些内存地址，除非你正在进行一些底层的或者和内存管理相关的编程。在大多数情况下，我们关心的是变量的值，而不是它们在内存中的位置。
+
+#[derive(Debug)]
+struct User {
+    active: bool,
+    username: String,
+    email: String,
+    sign_in_count: u64,
+}
