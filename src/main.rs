@@ -1,24 +1,23 @@
-fn main() {
-    let mut user1 = User {
-        email: String::from("someone@example.com"),
-        username: String::from("someusername123"),
-        active: true,
-        sign_in_count: 1,
-    };
-
-    user1.email = String::from("anotheremail@example.com");
-
-    let user2 = User {
-        email: String::from("another@example.com"),
-        ..user1
-    };
-    println!("{:?}", &user2);
+#[derive(Debug)]
+struct File {
+    name: String,
+    data: Vec<u8>,
 }
 
-#[derive(Debug)]
-struct User {
-    active: bool,
-    username: String,
-    email: String,
-    sign_in_count: u64,
+fn main() {
+    let mut data = Vec::new();
+    data.push(1);
+    data.push(2);
+    data.push(3);
+
+    let f1 = File {
+        name: String::from("f1.txt"),
+        data: data,
+    };
+
+    let f1_name = &f1.name;
+    let f1_length = f1.data.len();
+
+    println!("{:?}", f1);
+    println!("{} is {} bytes long", f1_name, f1_length);
 }
