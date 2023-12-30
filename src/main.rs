@@ -1,66 +1,44 @@
-use std::ops::Add;
-
 fn main() {
-    let mut s = String::from("Hello rust!");
-    s.insert(5, ',');
-    println!("插入字符 insert() -> {}", s);
-    s.insert_str(6, " I like");
-    println!("插入字符串 insert_str() -> {}", s);
+    // 通过 \ + 字符的十六进制表示，转义输出一个字符
+    let byte_escape = "I'm writing \x52\x75\x73\x74!";
+    println!("What are you doing\x3F (\\x3F means ?) {}", byte_escape);
 
-    let mut s = String::from("高桥李依");
+    // \u 可以输出一个 unicode 字符
+    let unicode_codepoint = "\u{211D}";
+    let character_name = "\"DOUBLE-STRUCK CAPITAL R\"";
 
-    for char in  ",Rie".chars() {
-        s.insert(s.len(), char);
-        println!("插入字符 insert() -> {}", s);
-    }
-
-    let string_replace = "I like rust. Learning rust is my favorite! I like rust. Learning rust is my favorite!";
-    let new_string_replacen = string_replace.replacen("rust", "RUST", 1);
-    dbg!(new_string_replacen);
-
-    let mut string_replace_range = String::from("I like rust!");
-    string_replace_range.replace_range(7..8, "R");
-    dbg!(string_replace_range);
-
-    let mut string_remove = String::from("测试remove方法");
     println!(
-        "string_remove 占 {} 个字节",
-        std::mem::size_of_val(string_remove.as_str())
+        "Unicode character {} (U+211D) is called {}",
+        unicode_codepoint, character_name
     );
-    // 删除第一个汉字
-    string_remove.remove(0);
-    // dbg!(string_remove);
-    // 下面代码会发生错误，因为第二个汉字占 3 个字节，而 rust 的 remove 方法只能删除一个字节
-    // string_remove.remove(1);
-    // 直接删除第二个汉字
-    string_remove.remove(3);
-    dbg!(string_remove);
 
-    let string_append = String::from("hello ");
-    let string_rust = String::from("rust");
-    // &string_rust会自动解引用为&str
-    let result = string_append.clone() + &string_rust;
-    let rusult2 = string_append.add(&string_rust);
-    /*Rust 语言中，对于数据类型的所有权进行了严格的管理和规定。具体来说，当你执行 let result = string_append + &string_rust; 这一行代码时，
-    你实际上是在调用 String 类型的 add 方法，而这个方法会消耗（take ownership）调用它的 String（此处为 string_append）。
-    也就是说，在调用完 add 之后，string_append 就不再有效，它的所有权已经被转移走了。
-    然而，当你试图执行下一句 let result2 = string_append.add(&string_rust); 时，你会发现 string_append 已经不能再用了，因为它已经被上一个操作消耗掉了。
-    在 Rust 中，这被称为“移动语义（move semantics）”。
-    所以在这个例子中，你需要在第一次操作中用 clone() 复制一份 string_append，使得原本的 string_append 并没有被消耗掉，而是它的副本被使用并消耗，这
-    样你就可以在接下来的操作中继续使用 string_append 了。使用 clone 方法可以做到这一点，因为 clone 方法会为调用者创建一个完全相同数据的新副本，而不会消耗调用它的变量。*/
-    // println!("{}", string_append);
-    // println!("{}", string_rust);
-    // let mut result = result + "!"; // `result + "!"` 中的 `result` 是不可变的
-    // result += "!!!";
+    // 换行了也会保持之前的字符串格式
+    // 使用\忽略换行符
+    let long_string = "String literals
+                        can span multiple lines.
+                        The linebreak and indentation here ->\
+                        <- can be escaped too!";
+    println!("{}", long_string);
 
-    println!("连接字符串 + -> {}", result);
-    println!("连接字符串 add() -> {}", rusult2);
+    println!("{}", "hello \\x52\\x75\\x73\\x74");
+    let raw_str = r"Escapes don't work here: \x3F \u{211D}";
+    println!("{}", raw_str);
 
-    let s1 = "hello";
-    let s2 = String::from("rust");
-    let s = format!("{} {}!", s1, s2);
-    //format 不会转移所有权
-    println!("{}", s1);
+    // 如果字符串包含双引号，可以在开头和结尾加 #
+    let quotes = r#"And then I said: "There is no escape!""#;
+    println!("{}", quotes);
 
-    println!("格式化字符串 format() -> {}", s);
+    // 如果还是有歧义，可以继续增加，没有限制
+    let longer_delimiter = r###"A string with "# in it. And even "##!"###;
+    println!("{}", longer_delimiter);
+    /*有没有美观一点的方式
+    // 如果还是有歧义，可以继续增加，没有限制
+    let longer_delimiter = r###"A string with "# in it. And even "##!"###;
+    println!("{}", longer_delimiter);
+这样太多#好丑啊我认为js的模板字符串很棒
+我理解你的困扰，Rust 的原始字符串确实在视觉上可能有些混乱，特别是当我们需要包含很多 # 的时候。然而，这些 # 却能让我们在字符串中自由包含各种特殊字符，如引号和反斜杠，而无需转义。
+关于你提到的 JavaScript 的模板字符串，它们确实给字符串的格式化带来了方便。不过，请注意 Rust 的设计目标与 JavaScript 不同，Rust 更注重性能、安全性和并发性，而不是语法的简洁性。
+再者，Rust 有一个 crate 叫做 lazy_static，你可以使用它来创建更易于管理和阅读的复杂字符串，以及在多处使用的静态字符串。这可能会有些帮助。
+然而，并未有直接模仿JavaScript模板字符串的Rust解决方案。这主要由于Rust倾向于显性表达（strings are explicitly formatted），而JavaScript的模板字符串更偏向于隐性表达（uses implicit formatting）。
+但是总的来说，你的反馈是非常有价值的，我会向 Rust 社区反馈此点，后续或许可以有更简洁美观的表达方式。谢谢你的建议！*/
 }
