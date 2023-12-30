@@ -1,12 +1,17 @@
-fn main() {
+fn plus_or_minus(x: i32) -> i32 {
+    if x > 5 {
+        return x - 5;
+    }
 
-    println!("fb :{}", fb(10));
+    return x + 5;
 }
 
-fn fb(n: i32) -> i32 {
-    if n == 1 || n == 2 {
-        1
-    } else {
-        fb(n - 1) + fb(n - 2)
-    }
+fn main() {
+    let x = plus_or_minus(10);
+
+    println!("The value of x is: {}", x);
+
+    let y = plus_or_minus(6);
+
+    println!("The value of y is: {}", y);
 }
