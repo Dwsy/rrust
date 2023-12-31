@@ -1,23 +1,51 @@
-use std::fmt;
+pub trait Summary {
+    fn summarize(&self) -> String;
+    fn new() -> Self;
+}
+
+pub struct Post {
+    pub title: String,
+    // 标题
+    pub author: String,
+    // 作者
+    pub content: String, // 内容
+}
+
+impl Summary for Post {
+    fn summarize(&self) -> String {
+        format!("文章{}, 作者是{}", self.title, self.author)
+    }
+    fn new() -> Self {
+        Post {
+            title: "".to_string(),
+            author: "".to_string(),
+            content: "".to_string(),
+        }
+    }
+}
+
+pub struct Weibo {
+    pub username: String,
+    pub content: String,
+}
+
+impl Summary for Weibo {
+    fn summarize(&self) -> String {
+        format!("{}发表了微博{}", self.username, self.content)
+    }
+
+    fn new() -> Self {
+        todo!()
+    }
+}
 
 fn main() {
-    let a = 1;
-    let b = 2;
-    println!("a: {}, b: {}", a, b);
+    let mut post = Post::new();
+    post = Post {
+        title: String::from("Rust从入门到入门"),
+        author: "author".to_string(),
+        content: "content".to_string(),
+    };
 
-    let c = DebugTest { a: 1, b: 2 };
-    dbg!(c);
-}
-
-#[derive(Debug)]
-#[allow(dead_code)]
-struct DebugTest {
-    a: i32,
-    b: i32,
-}
-#[allow(dead_code)]
-impl DebugTest {
-    fn debug(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "DebugTest {{ a: {}, b: {} }}", self.a, self.b)
-    }
+    println!("{}", post.summarize());
 }
