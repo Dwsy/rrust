@@ -6,17 +6,18 @@ fn main() {
     println!("a: {}, b: {}", a, b);
 
     let c = DebugTest { a: 1, b: 2 };
-    println!("c: {:?}", c);
-    println!("c: {:#?}", c);
-
+    dbg!(c);
 }
 
+#[derive(Debug)]
+#[allow(dead_code)]
 struct DebugTest {
     a: i32,
     b: i32,
 }
-impl fmt::Debug for DebugTest {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+#[allow(dead_code)]
+impl DebugTest {
+    fn debug(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "DebugTest {{ a: {}, b: {} }}", self.a, self.b)
     }
 }
