@@ -1,25 +1,24 @@
-fn main() {
-    let mut collisions = 0;
-    let light = 1.0;
-    let heavy = 1000000.0;
+use std::ops::{Add, Sub, Mul, Div};
 
-    let mut light_velocity = 0.0;
-    let mut heavy_velocity = -1.0;
+enum Operator {
+    Add,
+    Sub,
+    Mul,
+    Div,
+}
 
-    while heavy_velocity < light_velocity || light_velocity < 0.0 {
-        if heavy_velocity < light_velocity {
-            let new_light_velocity =
-                (light - heavy) / (light + heavy) * light_velocity
-                    + 2.0 * heavy / (light + heavy) * heavy_velocity;
-            heavy_velocity =
-                2.0 * light / (light + heavy) * light_velocity
-                    + (heavy - light) / (light + heavy) * heavy_velocity;
-            light_velocity = new_light_velocity;
-        } else {
-            light_velocity = -light_velocity;
-        }
-        collisions += 1;
+fn calculate<T: Add<Output=T> + Sub<Output=T> + Mul<Output=T> + Div<Output=T>>(a: T, b: T, operator: Operator) -> T {
+    match operator {
+        Operator::Add => a + b,
+        Operator::Sub => a - b,
+        Operator::Mul => a * b,
+        Operator::Div => a / b,
     }
+}
 
-    println!("Collisions: {}", collisions);
+fn main() {
+    println!("{}", calculate(10, 5, Operator::Add));
+    println!("{}", calculate(10, 5, Operator::Sub));
+    println!("{}", calculate(10, 5, Operator::Mul));
+    println!("{}", calculate(10, 5, Operator::Div));
 }
