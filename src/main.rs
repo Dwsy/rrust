@@ -1,28 +1,25 @@
 fn main() {
-    let circle = Circle::new(0.0, 0.0, 10.0);
-    let area = circle.area();
-    println!("{}", area);
-
-}
-struct Circle {
-    x: f64,
-    y: f64,
-    radius: f64,
+    let user = User::new("Dwsy".to_string(), 18);
+    println!("name: {}", user.get_name());
+    println!("{}", user.age);
+    println!("{}", user.name);
 }
 
-impl Circle {
-    // new是Circle的关联函数，因为它的第一个参数不是self，且new并不是关键字
-    // 这种方法往往用于初始化当前结构体的实例
-    fn new(x: f64, y: f64, radius: f64) -> Circle {
-        Circle {
-            x: x,
-            y: y,
-            radius: radius,
+struct User {
+    name: String,
+    age: u32,
+}
+
+impl User {
+    fn new(name: String, age: u32) -> User {
+        User {
+            name,
+            age,
         }
     }
-
-    // Circle的方法，&self表示借用当前的Circle结构体
-    fn area(&self) -> f64 {
-        std::f64::consts::PI * (self.radius * self.radius)
+}
+impl User {
+    fn get_name(&self) -> &String {
+        &self.name
     }
 }
