@@ -1,16 +1,11 @@
-struct Point<T> {
-    x: T,
-    y: T,
+fn display_array<T: std::fmt::Debug>(arr: &[T]) {
+    println!("{:?}", arr);
+    dbg!(arr);
 }
-
-impl<T> Point<T> {
-    fn x(&self) -> &T {
-        &self.x
-    }
-}
-
 fn main() {
-    let p = Point { x: 5, y: 10 };
+    let arr: [i32; 3] = [1, 2, 3];
+    display_array(&arr);
 
-    println!("p.x = {}", p.x());
+    let arr: [i32;2] = [1,2];
+    display_array(&arr);
 }
