@@ -1,59 +1,23 @@
 fn main() {
-    let arr: [u8; 3] = [1, 2, 3];
+    // array -> Vec
+    let arr = [1, 2, 3];
+    let v1 = Vec::from(arr);
+    let v2: Vec<i32> = arr.to_vec();
 
-    let v = Vec::from(arr);
-    is_vec(&v);
+    assert_eq!(v1, v2);
 
-    let v = vec![1, 2, 3];
-    is_vec(&v);
 
-    // vec!(..) and vec![..] are same macros, so
-    let v = vec!(1, 2, 3);
-    is_vec(&v);
+    // String -> Vec
+    let s = "hello".to_string();
+    let v1: Vec<u8> = s.into();
 
-    // in code below, v is Vec<[u8; 3]> , not Vec<u8>
-    // USE `for` to rewrite the below code
-    let mut v1 = Vec::new();
-    for i in &v {
-        v1.push(*i)
-    }
-    is_vec(&v1);
+    let s = "hello".to_string();
+    let v2 = s.into_bytes();
+    assert_eq!(v1, v2);
 
-    assert_eq!(format!("{:?}",v), format!("{:?}",v1));
+    let s = "hello";
+    let v3 = Vec::from(s);
+    assert_eq!(v2, v3);
 
     println!("Success!")
 }
-
-fn is_vec(v: &Vec<u8>) {}
-
-
-//Another solution
-
-
-fn main2() {
-    let arr: [u8; 3] = [1, 2, 3];
-
-    let v = Vec::from(arr);
-    is_vec(&v);
-
-    let v = vec![1, 2, 3];
-    is_vec(&v);
-
-    // vec!(..) and vec![..] are same macros, so
-    let v = vec!(1, 2, 3);
-    is_vec(&v);
-
-    // in code below, v is Vec<[u8; 3]> , not Vec<u8>
-    // USE Vec::new and `for` to rewrite the below code
-    let mut v1 = vec!();
-    for i in &v{
-        v1.push(*i);
-    }
-    is_vec(&v1);
-
-    assert_eq!(v, v1);
-
-    println!("Success!")
-}
-
-fn is_vec2(v: &Vec<u8>) {}
