@@ -1,23 +1,21 @@
+// FIX the errors
 fn main() {
-    // array -> Vec
-    let arr = [1, 2, 3];
-    let v1 = Vec::from(arr);
-    let v2: Vec<i32> = arr.to_vec();
+    let mut v = vec![1, 2, 3];
 
-    assert_eq!(v1, v2);
+    let slice1 = &v[..];
+    // out of bounds will cause a panic
+    // You must use `v.len` here
+    let slice2 = &v[0..v.len()];
 
+    assert_eq!(slice1, slice2);
 
-    // String -> Vec
-    let s = "hello".to_string();
-    let v1: Vec<u8> = s.into();
+    // slice are read only
+    // Note: slice and &Vec are different
+    let vec_ref: &mut Vec<i32> = &mut v;
+    (*vec_ref).push(4);
+    let slice3 = &mut v[0..];
 
-    let s = "hello".to_string();
-    let v2 = s.into_bytes();
-    assert_eq!(v1, v2);
-
-    let s = "hello";
-    let v3 = Vec::from(s);
-    assert_eq!(v2, v3);
+    assert_eq!(slice3, &[1, 2, 3, 4]);
 
     println!("Success!")
 }
