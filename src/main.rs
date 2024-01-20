@@ -19,7 +19,7 @@ struct Config<'a> {
     file_path: &'a str,
 }
 
-fn parse_config(args: &[String]) -> Config {
+fn parse_config(args: &Vec<String>) -> Config {
     let query = if args.len() > 1 {
         &args[1]
     } else {
