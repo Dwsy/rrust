@@ -12,7 +12,7 @@ pub fn highlight_search(text: &str, search: &str) {
     let highlighted = text.replace(search, &format!("{}", search.red()));
     println!("{}", highlighted);
 }
-#[derive()]
+#[derive(Debug)]
 pub struct Config<'a> {
     pub query: &'a str,
     pub file_path: &'a str,
