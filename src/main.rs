@@ -1,17 +1,15 @@
 use std::fs::File;
-use std::io::ErrorKind;
+use std::io::Write;
 
-fn main() {
-    let f = File::open("hello.txt");
+fn main() -> std::io::Result<()> {
+    // 打开文件，如果文件不存在则创建它
+    let mut file = File::create("hello.txt")?;
 
-    let f = match f {
-        Ok(file) => file,
-        Err(error) => match error.kind() {
-            ErrorKind::NotFound => match File::create("hello.txt") {
-                Ok(fc) => fc,
-                Err(e) => panic!("Problem creating the file: {:?}", e),
-            },
-            other_error => panic!("Problem opening the file: {:?}", other_error),
-        },
-    };
+    // 定义要写入的字符串
+    let contents = "Hello, world!";
+
+    // 将字符串写入文件
+    file.write_all(contents.as_bytes())?;
+
+    Ok(())
 }
