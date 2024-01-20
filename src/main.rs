@@ -19,6 +19,12 @@ struct Config<'a> {
     file_path: &'a str,
 }
 
+impl<'a> Config<'a> {
+    fn new(query: &'a str, file_path: &'a str) -> Self {
+        Self { query, file_path }
+    }
+}
+
 fn parse_config(args: &Vec<String>) -> Config {
     let query = if args.len() > 1 {
         &args[1]
@@ -30,8 +36,5 @@ fn parse_config(args: &Vec<String>) -> Config {
     } else {
         "Explosion.txt"
     };
-    Config {
-        query: query,
-        file_path: file_path,
-    }
+    Config::new(query, file_path)
 }
