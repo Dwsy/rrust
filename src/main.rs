@@ -1,27 +1,45 @@
-#[derive(Debug)]
-enum Number {
-    Zero,
-    One,
-    Two,
+use crate::List::*;
+
+enum List {
+    Cons(u32, Box<List>),
+    Nil,
 }
 
-enum Number1 {
-    Zero = 0,
-    One,
-    Two,
-}
+impl List {
+    fn new() -> List {
+        Nil
+    }
 
-// C-like enum
-enum Number2 {
-    Zero = 0,
-    One = 1,
-    Two = 2,
-}
+    fn prepend(self, elem: u32) -> List {
+        Cons(elem, Box::new(self))
+    }
 
+    fn len(&self) -> u32 {
+        match *self {
+            Cons(_, ref tail) => 1 + tail.len(),
+            Nil => 0,
+        }
+    }
+
+    fn stringify(&self) -> String {
+        match *self {
+            Cons(head, ref tail) => {
+                format!("{}, {}", head, tail.stringify())
+            }
+            Nil => {
+                format!("Nil")
+            }
+        }
+    }
+}
 
 fn main() {
-    println!("{:?}", Number::One);
-    // a enum variant can be converted to a integer by `as`
-    assert_eq!(Number::One as u8, Number1::One as u8);
-    assert_eq!(Number1::One as u8, Number2::One as u8);
-} 
+    let mut list = List::new();
+
+    list = list.prepend(1);
+    list = list.prepend(2);
+    list = list.prepend(3);
+
+    println!("链表的长度是: {}", list.len());
+    println!("{}", list.stringify());
+}
