@@ -2,8 +2,14 @@ use std::{env, fs};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-
-    let config = parse_config(&args);
+    if args.len() < 2 {
+        println!("Not enough arguments");
+        return;
+    } else if args.len() > 3 {
+        println!("Too many arguments");
+        return;
+    }
+    let config = Config::new(&args);
 
     println!("Searching for {}", config.query);
     println!("In file {}", config.file_path);
@@ -33,8 +39,4 @@ impl<'a> Config<'a> {
         };
         Self { query, file_path }
     }
-}
-
-fn parse_config(args: &Vec<String>) -> Config {
-    Config::new(args)
 }
