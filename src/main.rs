@@ -20,21 +20,21 @@ struct Config<'a> {
 }
 
 impl<'a> Config<'a> {
-    fn new(query: &'a str, file_path: &'a str) -> Self {
+    fn new(args: &'a Vec<String>) -> Self {
+        let query = if args.len() > 1 {
+            &args[1]
+        } else {
+            "Explosion"
+        };
+        let file_path = if args.len() > 2 {
+            &args[2]
+        } else {
+            "Explosion.txt"
+        };
         Self { query, file_path }
     }
 }
 
 fn parse_config(args: &Vec<String>) -> Config {
-    let query = if args.len() > 1 {
-        &args[1]
-    } else {
-        "Explosion"
-    };
-    let file_path = if args.len() > 2 {
-        &args[2]
-    } else {
-        "Explosion.txt"
-    };
-    Config::new(query, file_path)
+    Config::new(args)
 }
