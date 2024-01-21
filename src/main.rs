@@ -1,45 +1,28 @@
-struct Interface<'b, 'a: 'b> {
-    manager: &'b mut Manager<'a>,
+use std::{slice::from_raw_parts, str::from_utf8_unchecked};
+
+fn get_memory_location() -> (usize, usize) {
+    // “Hello World” 是字符串字面量，因此它的生命周期是 `'static`.
+    // 但持有它的变量 `string` 的生命周期就不一样了，它完全取决于变量作用域，对于该例子来说，也就是当前的函数范围
+    let string = "Hello World!";
+    let pointer = string.as_ptr() as usize;
+    let length = string.len();
+    (pointer, length)
+    // `string` 在这里被 drop 释放
+    // 虽然变量被释放，无法再被访问，但是数据依然还会继续存活
 }
 
-impl<'b, 'a: 'b> Interface<'b, 'a> {
-    pub fn noop(self) {
-        println!("interface consumed");
-    }
-}
-
-struct Manager<'a> {
-    text: &'a str,
-}
-
-struct List<'a> {
-    manager: Manager<'a>,
-}
-
-impl<'a> List<'a> {
-    pub fn get_interface<'b>(&'b mut self) -> Interface<'b, 'a>
-    where
-        'a: 'b,
-    {
-        Interface {
-            manager: &mut self.manager,
-        }
-    }
+fn get_str_at_location(pointer: usize, length: usize) -> &'static str {
+    // 使用裸指针需要 `unsafe{}` 语句块
+    unsafe { from_utf8_unchecked(from_raw_parts(pointer as *const u8, length)) }
 }
 
 fn main() {
-    let mut list = List {
-        manager: Manager { text: "hello" },
-    };
-
-    list.get_interface().noop();
-
-    println!("Interface should be dropped here and the borrow released");
-
-    // 下面的调用可以通过，因为Interface的生命周期不需要跟list一样长
-    use_list(&list);
-}
-
-fn use_list(list: &List) {
-    println!("{}", list.manager.text);
+    let (pointer, length) = get_memory_location();
+    let message = get_str_at_location(pointer, length);
+    println!(
+        "The {} bytes at 0x{:X} stored: {}",
+        length, pointer, message
+    );
+    // 如果大家想知道为何处理裸指针需要 `unsafe`，可以试着反注释以下代码
+    // let message: &str = get_str_at_location(1000, 10);
 }
