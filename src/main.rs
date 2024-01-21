@@ -1,26 +1,42 @@
-#[derive(Debug)]
-struct Point {
-    x: i32,
-    y: i32,
+struct Interface<'b, 'a: 'b> {
+    manager: &'b mut Manager<'a>,
 }
 
-impl Point {
-    fn move_to(&mut self, x: i32, y: i32) {
-        self.x = x;
-        self.y = y;
+impl<'b, 'a: 'b> Interface<'b, 'a> {
+    pub fn noop(self) {
+        println!("interface consumed");
+    }
+}
+
+struct Manager<'a> {
+    text: &'a str,
+}
+
+struct List<'a> {
+    manager: Manager<'a>,
+}
+
+impl<'a> List<'a> {
+    pub fn get_interface<'b: 'a>(&'b mut self) -> Interface<'b, 'a> {
+        Interface {
+            manager: &mut self.manager,
+        }
     }
 }
 
 fn main() {
-    let mut p = Point { x: 0, y: 0 };
-    let r = &mut p;
-    // reborrow! 此时对`r`的再借用不会导致跟上面的借用冲突
-    let rr: &Point = &*r;
+    let mut list = List {
+        manager: Manager { text: "hello" },
+    };
 
-    // 再借用`rr`最后一次使用发生在这里，在它的生命周期中，我们并没有使用原来的借用`r`，因此不会报错
-    println!("{:?}", rr);
+    list.get_interface().noop();
 
-    // 再借用结束后，才去使用原来的借用`r`
-    r.move_to(10, 10);
-    println!("{:?}", r);
+    println!("Interface should be dropped here and the borrow released");
+
+    // 下面的调用可以通过，因为Interface的生命周期不需要跟list一样长
+    use_list(&list);
+}
+
+fn use_list(list: &List) {
+    println!("{}", list.manager.text);
 }
