@@ -17,7 +17,10 @@ struct List<'a> {
 }
 
 impl<'a> List<'a> {
-    pub fn get_interface<'b: 'a>(&'b mut self) -> Interface<'b, 'a> {
+    pub fn get_interface<'b>(&'b mut self) -> Interface<'b, 'a>
+    where
+        'a: 'b,
+    {
         Interface {
             manager: &mut self.manager,
         }
