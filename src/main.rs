@@ -1,26 +1,25 @@
+use std::sync::mpsc;
 use std::thread;
-use std::sync::Once;
-
-static mut VAL: usize = 0;
-static INIT: Once = Once::new();
+use std::time::Duration;
 
 fn main() {
-    let handle1 = thread::spawn(move || {
-        INIT.call_once(|| {
-            unsafe { VAL = 1; }
-        });
+    let (tx, rx) = mpsc::channel();
+
+    thread::spawn(move || {
+        let vals = vec![
+            String::from("hi"),
+            String::from("from"),
+            String::from("the"),
+            String::from("thread"),
+        ];
+
+        for val in vals {
+            tx.send(val).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
     });
 
-    let handle2 = thread::spawn(move || {
-        INIT.call_once(|| {
-            unsafe {
-                VAL = 2;
-            }
-        });
-    });
-
-    handle1.join().unwrap();
-    handle2.join().unwrap();
-
-    println!("{}", unsafe { VAL });
+    for received in rx {
+        println!("Got: {}", received);
+    }
 }
