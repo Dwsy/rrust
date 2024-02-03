@@ -1,18 +1,23 @@
 use std::thread;
-use std::time::Duration;
+use std::sync::{Arc, Mutex, Condvar};
 
 fn main() {
-    let handle = thread::spawn(|| {
-        for i in 1..5 {
-            println!("hi number {} from the spawned thread!", i);
-            thread::sleep(Duration::from_millis(1));
-        }
+    let pair = Arc::new((Mutex::new(false), Condvar::new()));
+    let pair2 = pair.clone();
+
+    thread::spawn(move|| {
+        let (lock, cvar) = &*pair2;
+        let mut started = lock.lock().unwrap();
+        println!("changing started");
+        *started = true;
+        cvar.notify_one();
     });
 
-    handle.join().expect("TODO: panic message");
-
-    for i in 1..5 {
-        println!("hi number {} from the main thread!", i);
-        thread::sleep(Duration::from_millis(1));
+    let (lock, cvar) = &*pair;
+    let mut started = lock.lock().unwrap();
+    while !*started {
+        started = cvar.wait(started).unwrap();
     }
+
+    println!("started changed");
 }
