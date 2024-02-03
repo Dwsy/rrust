@@ -1,23 +1,26 @@
 use std::thread;
-use std::sync::{Arc, Mutex, Condvar};
+use std::sync::Once;
+
+static mut VAL: usize = 0;
+static INIT: Once = Once::new();
 
 fn main() {
-    let pair = Arc::new((Mutex::new(false), Condvar::new()));
-    let pair2 = pair.clone();
-
-    thread::spawn(move|| {
-        let (lock, cvar) = &*pair2;
-        let mut started = lock.lock().unwrap();
-        println!("changing started");
-        *started = true;
-        cvar.notify_one();
+    let handle1 = thread::spawn(move || {
+        INIT.call_once(|| {
+            unsafe { VAL = 1; }
+        });
     });
 
-    let (lock, cvar) = &*pair;
-    let mut started = lock.lock().unwrap();
-    while !*started {
-        started = cvar.wait(started).unwrap();
-    }
+    let handle2 = thread::spawn(move || {
+        INIT.call_once(|| {
+            unsafe {
+                VAL = 2;
+            }
+        });
+    });
 
-    println!("started changed");
+    handle1.join().unwrap();
+    handle2.join().unwrap();
+
+    println!("{}", unsafe { VAL });
 }
